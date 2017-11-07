@@ -1,0 +1,100 @@
+// const instructions = Platform.select({
+//   ios: 'Press Cmd+R to reload,\n' +
+//     'Cmd+D or shake for dev menu',
+//   android: 'Double tap R on your keyboard to reload,\n' +
+//     'Shake or press menu button for dev menu',
+// });
+
+// var WishItemRepo = WishItemRepo || {};
+
+// var tempList =  [{key: 1, name: "item", type:"type", shop:"shop", price:1.1},{key: 2, name: "item2", type:"type2", shop:"shop2", price:2.2},{key: 3, name: "item3", type:"type3", shop:"shop3", price:3.3}];
+
+// class WishItemComponent extends Component{
+
+//   _onPress = () =>{
+//     Alert.alert("YOO");
+//   }
+  
+//   render(){
+//     return(
+//       <TouchableOpacity onPress={this._onPress}>
+//       <Text>{this.props.data.name}</Text>
+//     </TouchableOpacity>
+//     )
+//   }
+// }
+
+// class List extends Component{
+//   render(){
+//     return(
+//       <View style={styles.container}>
+//         <FlatList data={tempList} renderItem={({item}) => <WishItemComponent style={styles.item} data={item} />} />
+//       </View>
+//     )
+//   }
+// }
+
+// class CustomListItem extends React.PureComponent{
+//   _onPress = () => {
+//     this.props.onPressItem(this.props.id);
+//   }
+
+//   render(){
+//     return (
+//       <Text onPress={this._onPress}>{this.props.id}</Text>
+//     )
+//   }
+// }
+// class CustomList extends React.PureComponent{
+//   state = {selected: (new Map(): Map<string,boolean>)};
+  
+//   _keyExtractor = (item, index) => item.id;
+
+//   _onPressItem = (id: string) => {
+//     this.setState((state) => {
+//       const selected = new Map(state.selected);
+//       selected.set(id, !selected.get(id)); // toggle
+//       return {selected};
+//     });
+//   };
+//   _renderItem = ({item}) => (
+//     <CustomListItem
+//       id={item.id}
+//       onPressItem={this._onPressItem}
+//       selected={!!this.state.selected.get(item.id)}
+//       title={item.title}
+//     />
+//   );
+
+//   render() {
+//     return (
+//       <FlatList
+//         data={this.props.data}
+//         extraData={this.state}
+//         keyExtractor={this._keyExtractor}
+//         renderItem={this._renderItem}
+//       />
+//     );
+//   }
+// }
+
+// export default class App extends Component<{}> {
+//   render() {
+//     return (
+//       <View style={styles.container}>
+
+//       <List />
+//         {/* <CustomList data={tempList} render={this._renderItem} /> */}
+//         <Text style={styles.welcome}>
+//           Welcome to React Native!
+//         </Text>
+//         <Text style={styles.instructions}>
+//           To get started, edit App.js
+//         </Text>
+//         <Text style={styles.instructions}>
+//           {instructions}
+//         </Text>
+//       </View>
+//     );
+//   }
+// }
