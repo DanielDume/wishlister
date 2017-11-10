@@ -48,7 +48,7 @@ public class WishItemAdapter extends BaseAdapter {
     }
 
     @Override
-    public Object getItem(int position) {
+    public WishItem getItem(int position) {
         return items.get(position);
     }
 
@@ -70,9 +70,11 @@ public class WishItemAdapter extends BaseAdapter {
         nameView.setText(items.get(position).getName());
         typeView.setText(items.get(position).getType());
         shopView.setText(items.get(position).getShop());
-        priceView.setTest(items.get(position).getPrice());
+        priceView.setText(String.valueOf(items.get(position).getPrice()));
 
+        v.setTag(items.get(position));
 
+        return v;
 
     }
 }

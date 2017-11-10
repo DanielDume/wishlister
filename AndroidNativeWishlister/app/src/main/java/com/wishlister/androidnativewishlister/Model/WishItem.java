@@ -1,10 +1,12 @@
 package com.wishlister.androidnativewishlister.Model;
 
+import java.io.Serializable;
+
 /**
  * Created by Daniel on 11/6/2017.
  */
 
-public class WishItem {
+public class WishItem implements Serializable{
     private long id;
     private String name, type, shop;
     private double price;
@@ -14,6 +16,14 @@ public class WishItem {
         this.type = type;
         this.shop = shop;
         this.price = price;
+    }
+
+    public WishItem(String name, String type, String shop, double price, long id) {
+        this.name = name;
+        this.type = type;
+        this.shop = shop;
+        this.price = price;
+        this.id = id;
     }
 
     public String getName() {
