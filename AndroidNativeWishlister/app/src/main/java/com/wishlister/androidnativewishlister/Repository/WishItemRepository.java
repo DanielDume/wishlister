@@ -12,10 +12,9 @@ import java.util.List;
 
 public class WishItemRepository implements IWishItemRepository, Serializable {
 
-    private ArrayList<WishItem> items;
+    private ArrayList<WishItem> items = new ArrayList<>();
 
     public WishItemRepository() {
-        ArrayList<WishItem> items = new ArrayList<>();
         items.add(new WishItem("name","type","shop",1.1, 0));
         items.add(new WishItem("name2","type2","shop2",2.2, 1));
         items.add(new WishItem("name3","type3","shop3",3.3, 2));

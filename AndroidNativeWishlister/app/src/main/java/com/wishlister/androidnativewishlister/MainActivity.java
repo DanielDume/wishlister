@@ -2,6 +2,7 @@ package com.wishlister.androidnativewishlister;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.app.Activity;
@@ -28,37 +29,39 @@ public class MainActivity extends AppCompatActivity {
     private EditText editText3;
     private EditText editText4;
     private WishItemAdapter adapter;
-    private ArrayList<WishItem> wishItems;
+    private ArrayList<WishItem> wishItems = new ArrayList<>();
     private ListView listView;
     private static int ID =0;
     private boolean editFlag =false;
     private int Selected_ID =0;
     private final String EMPTY_STRING ="";
+    private WishItemRepository repo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        
+
         super.onCreate(savedInstanceState);
+
+
         setContentView(R.layout.activity_main);
         listView = (ListView)findViewById(R.id.listView);
-        wishItems=new ArrayList<>();
-        wishItems.add(new WishItem("name1","type1","shop1",1.15,0));
-        ID++;
-        adapter = new WishItemAdapter(wishItems, this);
+        ID = 1;
+        if ((WishItemRepository) getIntent().getSerializableExtra("Repository") != null){
+            repo = (WishItemRepository) getIntent().getSerializableExtra("Repository");
+        }
+        else {
+            repo = new WishItemRepository();
+        }
+        adapter = new WishItemAdapter(repo.getAllItems(), this);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
-                intent.putExtra("Item", adapter.getItem(i));
-                startActivity(intent);
 
-                editText.setText(adapter.getItem(i).getName());
-                editText2.setText(adapter.getItem(i).getType());
-                editText3.setText(adapter.getItem(i).getShop());
-                editText4.setText(Double.toString(adapter.getItem(i).getPrice()));
-                editFlag = true;
-                Selected_ID =(int)adapter.getItem(i).getId();
+                Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
+                intent.putExtra("Repository", repo);
+                intent.putExtra("idItem", i);
+                startActivity(intent);
             }
         });
         button = (Button)findViewById(R.id.button2);
@@ -96,6 +99,10 @@ public class MainActivity extends AppCompatActivity {
                             WishItem newWishItem = new WishItem(name,type,shop,price,ID);
                             ID++;
                             adapter.add(newWishItem);
+                            editText.setText(EMPTY_STRING);
+                            editText2.setText(EMPTY_STRING);
+                            editText3.setText(EMPTY_STRING);
+                            editText4.setText(EMPTY_STRING);
                             Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
                                     "mailto","daniel.dume05@gmail.com", null));
                             emailIntent.putExtra(Intent.EXTRA_SUBJECT, "New Wish Item");

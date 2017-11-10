@@ -4,11 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.wishlister.androidnativewishlister.MainActivity">
+    tools:context="com.wishlister.androidnativewishlister.DetailsActivity">
 
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/detailsEditName"
         android:layout_width="wrap_content"
         android:layout_height="46dp"
         android:layout_marginStart="8dp"
@@ -20,7 +20,7 @@
         android:layout_marginLeft="8dp" />
 
     <EditText
-        android:id="@+id/editText2"
+        android:id="@+id/detailsEditType"
         android:layout_width="wrap_content"
         android:layout_height="41dp"
         android:layout_marginStart="8dp"
@@ -31,9 +31,9 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_editor_absoluteX="123dp"
         android:layout_marginLeft="8dp" />
-    
+
     <EditText
-        android:id="@+id/editText3"
+        android:id="@+id/detailsEditShop"
         android:layout_width="wrap_content"
         android:layout_height="46dp"
         android:layout_marginStart="8dp"
@@ -46,7 +46,7 @@
         android:layout_marginLeft="8dp" />
 
     <EditText
-        android:id="@+id/editText4"
+        android:id="@+id/detailsEditPrice"
         android:layout_width="wrap_content"
         android:layout_height="41dp"
         android:layout_marginStart="8dp"
@@ -59,29 +59,14 @@
         android:layout_marginLeft="8dp" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/buttonSave"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="46dp"
         android:layout_marginTop="28dp"
-        android:text="Add"
+        android:text="Save"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginRight="46dp" />
-
-    <ListView
-        android:id="@+id/listView"
-        android:layout_width="371dp"
-        android:layout_height="209dp"
-        android:layout_marginBottom="3dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="22dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText4"
-        app:layout_constraintVertical_bias="0.16"
-        tools:layout_editor_absoluteX="7dp"></ListView>
 
 </android.support.constraint.ConstraintLayout>
