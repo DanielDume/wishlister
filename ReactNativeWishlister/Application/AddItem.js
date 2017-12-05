@@ -12,10 +12,12 @@ import {
   Linking
 } from 'react-native';
 import Communications from 'react-native-communications';
+import StorageHelper from './Storage/StorageHelper';
+import { AsyncStorage } from 'react-native';
 export default class AddItemWindow extends React.Component{
     constructor(props){
         super(props);
-
+        this.storageHelper = new StorageHelper();
         this.state = {
             id:0,
             name: "",
@@ -55,7 +57,10 @@ export default class AddItemWindow extends React.Component{
                 }
             }
         }
-        Linking.openURL("mailto:daniel.dume05@gmail.com?subject=ReactAppMail&body=" + JSON.stringify(item));
+        //Linking.openURL("mailto:daniel.dume05@gmail.com?subject=ReactAppMail&body=" + JSON.stringify(item));
+        this.storageHelper.add(item);
+        //AsyncStorage.setItem(JSON.stringify(item.id), JSON.stringify(item));
+        //console.error(item);
         this.props.navigation.navigate("Home");
     }
 
