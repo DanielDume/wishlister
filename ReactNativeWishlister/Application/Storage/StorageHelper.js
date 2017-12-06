@@ -4,6 +4,13 @@ export default class StorageHelper {
     constructor() {
 
     };
+
+    async getTypes(){
+        var response = await fetch('http://10.10.10.10:3000/types');
+        var typesJson = await response.json();
+        return typesJson;
+    }
+
     async getAll() {
         var items = [];
         var fetchedItems = await AsyncStorage.getItem('ITEM_ID_LIST');
@@ -37,4 +44,16 @@ export default class StorageHelper {
             AsyncStorage.setItem(item.id, JSON.stringify(item));
         })
     };
+    async delete(id){        
+        AsyncStorage.getItem('ITEM_ID_LIST', (err, idList) => {
+            var tempList = JSON.parse(idList);
+            const index = tempList.indexOf(id);
+            if (index !== -1) {
+                array.splice(index, 1);
+            }
+            //console.error(tempList);
+            AsyncStorage.setItem('ITEM_ID_LIST', JSON.stringify(tempList));
+            AsyncStorage.removeItem(item.id);
+        })
+    }
 }

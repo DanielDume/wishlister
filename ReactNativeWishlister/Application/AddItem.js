@@ -60,15 +60,33 @@ export default class AddItemWindow extends React.Component {
         this.storageHelper.add(item);
         this.props.navigation.navigate("Home");
     }
+    delete() {
+        if (this.state.id === 0) {
+            alert("bad shit");
+        }
+        else {
+            this.storageHelper.delete(this.state.id.toString());
+        }
 
+    }
     render() {
         return (
             <View>
                 <TextInput onChangeText={(name) => this.setState({ name })} value={this.state.name} />
                 <TextInput keyboardType='numeric' onChangeText={(price) => this.setState({ price })} value={this.state.price.toString()} />
                 <TextInput onChangeText={(type) => this.setState({ type })} value={this.state.type} />
+                <Picker
+                    selectedValue={this.state.type}
+                    onValueChange={(itemValue, itemIndex) => this.setState({ type: itemValue })}>
+                    {this.storageHelper.getTypes().forEach(element => {
+                        <Picker.Item label={element.name} value={element.name} />       
+                    })};
+                    <Picker.Item label="Java" value="java" />
+                    <Picker.Item label="JavaScript" value="js" />
+                </Picker>
                 <TextInput onChangeText={(shop) => this.setState({ shop })} value={this.state.shop} />
                 <Button title="save" onPress={() => this.save()} />
+                <Button title="delete" onPress={() => this.delete()} />
             </View>
         );
     }
