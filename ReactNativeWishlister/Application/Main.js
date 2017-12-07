@@ -29,8 +29,11 @@ export default class MainWindow extends React.Component {
         }
     }
     async refreshItems() {
+        
+        //AsyncStorage.removeItem('ITEM_ID_LIST');
         this.itemList.length = 0;
         this.itemList = await this.storageHelper.getAll();
+        //console.error(this.itemList);
         this.setState({
             dataSource: this.state.dataSource.cloneWithRows(this.itemList)
         })
@@ -61,12 +64,14 @@ export default class MainWindow extends React.Component {
             </TouchableOpacity>
         );
     }
-
+    testFunc(){
+        console.error("gud tu si");
+    }
     add() {
         global.wishItemList.forEach(function (element) {
 
         }, this);
-        this.props.navigation.navigate("Item", {});
+        this.props.navigation.navigate("Item", {refreshFunction:this.refreshItems.bind(this)});
     }
 
     render() {

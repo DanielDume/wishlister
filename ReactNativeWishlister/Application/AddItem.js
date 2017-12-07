@@ -60,10 +60,10 @@ export default class AddItemWindow extends React.Component {
                 }
             }
         }
-        await this.storageHelper.add(item);
-        //this.props.navigation.state.params.refreshItems()
-        //this.props.navigation.goBack();
-        this.props.navigation.navigate("Home");
+        await this.storageHelper.add(item).then(()=>{this.props.navigation.state.params.refreshFunction().then(() => {this.props.navigation.goBack();})});
+        // this.props.navigation.state.params.refreshFunction();
+        // this.props.navigation.goBack();
+        ;
     }
 
     deleteConfirm(){

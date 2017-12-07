@@ -38,14 +38,27 @@ export default class StorageHelper {
 
     async add(item) {
         AsyncStorage.getItem('ITEM_ID_LIST', (err, idList) => {
-            var tempList = JSON.parse(idList);
-            if (item.id === -1) {
-                item.id = (parseInt(tempList[tempList.length - 1]) + 1).toString();
+            if(idList != null){                
+                var tempList = JSON.parse(idList);
+                if (item.id === -1) {
+                    item.id = (parseInt(tempList[tempList.length - 1]) + 1).toString();
+                    tempList.push(item.id);
+                    AsyncStorage.setItem('ITEM_ID_LIST', JSON.stringify(tempList));
+                }
+                //console.error(tempList);
+                AsyncStorage.setItem(item.id, JSON.stringify(item));
             }
-            tempList.push(item.id);
-            //console.error(tempList);
-            AsyncStorage.setItem('ITEM_ID_LIST', JSON.stringify(tempList));
-            AsyncStorage.setItem(item.id, JSON.stringify(item));
+            else{
+                tempList = [];
+                if (item.id === -1) {
+                    item.id = '1';                    
+                }
+                tempList.push(item.id);
+                //console.error(tempList);
+                AsyncStorage.setItem('ITEM_ID_LIST', JSON.stringify(tempList));
+                AsyncStorage.setItem(item.id, JSON.stringify(item));
+            }
+            
         })
     };
     async delete(id) {
