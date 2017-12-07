@@ -9,7 +9,9 @@ import {
     ListView,
     ScrollView,
     TouchableOpacity,
-    Linking
+    Linking,
+    Picker,
+    Alert
 } from 'react-native';
 import Communications from 'react-native-communications';
 import StorageHelper from './Storage/StorageHelper';
@@ -18,12 +20,13 @@ export default class AddItemWindow extends React.Component {
     constructor(props) {
         super(props);
         this.storageHelper = new StorageHelper();
+        this.types = [];
         this.state = {
             id: 0,
             name: "",
             type: "",
             shop: "",
-            price: 0.0
+            price: 0.0,
         };
 
         if (this.props.navigation.state.params.id !== undefined) {
@@ -34,10 +37,10 @@ export default class AddItemWindow extends React.Component {
             this.state.shop = toEdit.shop;
             this.state.price = toEdit.price;
         }
-
+        
     }
 
-    save() {
+    async save() {
         if (this.state.id === 0) {
             var item = {
                 id: -1,
@@ -57,9 +60,24 @@ export default class AddItemWindow extends React.Component {
                 }
             }
         }
-        this.storageHelper.add(item);
+        await this.storageHelper.add(item);
+        //this.props.navigation.state.params.refreshItems()
+        //this.props.navigation.goBack();
         this.props.navigation.navigate("Home");
     }
+
+    deleteConfirm(){
+        Alert.alert(
+            'Are you sure you want to delete this item?',
+            '',
+            [
+                {text: 'No', onPress: () => {}, style: 'cancel'},
+                {text: 'Yes', onPress: () => this.delete()},
+            ],
+            { cancelable: true }
+        );
+    }
+
     delete() {
         if (this.state.id === 0) {
             alert("bad shit");
@@ -69,7 +87,18 @@ export default class AddItemWindow extends React.Component {
         }
 
     }
+
+    async populatePicker() {
+        //console.error(tempTypes);
+        var tempTypes = await this.storageHelper.getTypes();
+        console.error(tempTypes);
+        tempTypes.forEach(element => {
+            this.types.push(element.name);
+        });
+    }
+
     render() {
+        //this.populatePicker();
         return (
             <View>
                 <TextInput onChangeText={(name) => this.setState({ name })} value={this.state.name} />
@@ -78,15 +107,13 @@ export default class AddItemWindow extends React.Component {
                 <Picker
                     selectedValue={this.state.type}
                     onValueChange={(itemValue, itemIndex) => this.setState({ type: itemValue })}>
-                    {this.storageHelper.getTypes().forEach(element => {
-                        <Picker.Item label={element.name} value={element.name} />       
-                    })};
-                    <Picker.Item label="Java" value="java" />
-                    <Picker.Item label="JavaScript" value="js" />
+                    <Picker.Item label='type1' value='type1' key='type1' />
+                    <Picker.Item label='type2' value='type2' key='type2' />
+                    {this.types.map((t, i) => {return <Item label={t} value={t} key={t} />})}
                 </Picker>
                 <TextInput onChangeText={(shop) => this.setState({ shop })} value={this.state.shop} />
                 <Button title="save" onPress={() => this.save()} />
-                <Button title="delete" onPress={() => this.delete()} />
+                <Button title="delete" onPress={() => this.deleteConfirm()} />
             </View>
         );
     }

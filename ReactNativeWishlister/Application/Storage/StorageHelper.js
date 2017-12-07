@@ -5,17 +5,21 @@ export default class StorageHelper {
 
     };
 
-    async getTypes(){
+    async getTypes() {
+        var types = [];
         var response = await fetch('http://10.10.10.10:3000/types');
         var typesJson = await response.json();
-        return typesJson;
+        for (var index = 0; index < typesJson.length; index++) {
+            var element = typesJson[index];
+            types.push(JSON.parse(element));
+        }
+        return types;
     }
 
     async getAll() {
         var items = [];
         var fetchedItems = await AsyncStorage.getItem('ITEM_ID_LIST');
         fetchedItems = JSON.parse(fetchedItems);
-        //console.error(fetchedItems);
         for (var index = 0; index < fetchedItems.length; index++) {
             var element = fetchedItems[index];
             var tempItem = await AsyncStorage.getItem(element);
@@ -44,16 +48,15 @@ export default class StorageHelper {
             AsyncStorage.setItem(item.id, JSON.stringify(item));
         })
     };
-    async delete(id){        
+    async delete(id) {
         AsyncStorage.getItem('ITEM_ID_LIST', (err, idList) => {
             var tempList = JSON.parse(idList);
             const index = tempList.indexOf(id);
             if (index !== -1) {
-                array.splice(index, 1);
+                tempList.splice(index, 1);
             }
-            //console.error(tempList);
             AsyncStorage.setItem('ITEM_ID_LIST', JSON.stringify(tempList));
-            AsyncStorage.removeItem(item.id);
+            AsyncStorage.removeItem(id);
         })
     }
 }
