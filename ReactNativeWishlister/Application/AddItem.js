@@ -13,6 +13,7 @@ import {
     Picker,
     Alert
 } from 'react-native';
+import {Pie} from 'react-native-pathjs-charts';
 import Communications from 'react-native-communications';
 import StorageHelper from './Storage/StorageHelper';
 import { AsyncStorage } from 'react-native';
@@ -38,10 +39,42 @@ export default class AddItemWindow extends React.Component {
             this.state.shop = toEdit.shop;
             this.state.price = toEdit.price;
         }
-
+        this.data = [];
+        this.getChartData();
+        this.options = {
+            margin: {
+                top: 10,
+                left: 20,
+                right: 20,
+                bottom: 20
+            },
+            width: 300,
+            height: 300,
+            color: '#2980B9',
+            r: 0,
+            R: 90,
+            legendPosition: 'topLeft',
+            animate: {
+                type: 'oneByOne',
+                duration: 200,
+                fillTransition: 3
+            },
+            label: {
+                fontFamily: 'Arial',
+                fontSize: 8,
+                fontWeight: true,
+                color: '#ECF0F1'
+            }
+        }
     }
 
-    async saveItem(){
+    getChartData(){
+        this.data.push({ "name" : "Type1", "population" : 50});
+        this.data.push({"name" : "Type2", "population" : 30});
+        this.data.push({"name" : "Type3", "population" : 100});
+    }
+
+    async saveItem() {
         if (this.state.id === 0) {
             var item = {
                 id: 0,
@@ -51,9 +84,9 @@ export default class AddItemWindow extends React.Component {
                 price: Number(this.state.price)
             };
             var id = 1;
-            if (global.dataArray.length > 0){
+            if (global.dataArray.length > 0) {
 
-                id = (parseInt(global.dataArray[global.dataArray.length - 1].id) + 1).toString();            
+                id = (parseInt(global.dataArray[global.dataArray.length - 1].id) + 1).toString();
             }
             item.id = id;
             global.dataArray.push(item);
@@ -65,9 +98,9 @@ export default class AddItemWindow extends React.Component {
                 if (global.dataArray[i].id == item.id) {
                     global.dataArray[i] = item;
                 }
-            }            
+            }
         }
-        this.storageHelper.addItem(item).then(()=>{}, ()=>{});
+        this.storageHelper.addItem(item).then(() => { }, () => { });
         this.props.navigation.state.params.refreshFunction();
         this.props.navigation.goBack();
     }
@@ -82,19 +115,19 @@ export default class AddItemWindow extends React.Component {
                 shop: this.state.shop,
                 price: Number(this.state.price)
             };
-            this.storageHelper.add(item);        
+            this.storageHelper.add(item);
             this.props.navigation.state.params.refreshFunction(item);
             this.props.navigation.goBack();
         }
         else {
             item = this.state;
-            item.id = item.id.toString();                        
-            this.storageHelper.add(item);        
+            item.id = item.id.toString();
+            this.storageHelper.add(item);
             this.props.navigation.navigate("Home");
             this.props.navigation.state.params.refreshFunction(item);
             this.props.navigation.goBack();
         }
-        
+
         ;
     }
 
@@ -109,15 +142,15 @@ export default class AddItemWindow extends React.Component {
             { cancelable: true }
         );
     }
-    delete(){
+    delete() {
         for (var index = 0; index < global.dataArray.length; index++) {
             var element = global.dataArray[index];
-            if(element.id == this.state.id){
+            if (element.id == this.state.id) {
                 global.dataArray.splice(index, 1);
                 break;
             }
         }
-        this.storageHelper.deleteItem(this.state.id).then(()=>{}, ()=>{});
+        this.storageHelper.deleteItem(this.state.id).then(() => { }, () => { });
         this.props.navigation.state.params.refreshFunction();
         this.props.navigation.goBack();
 
@@ -127,14 +160,14 @@ export default class AddItemWindow extends React.Component {
             alert("Cannot delete an unexisting item!");
             return;
         }
-        else {            
+        else {
             this.storageHelper.delete(this.state.id.toString()).then(() => {
                 this.props.navigation.navigate("Home");
                 alert("THEN");
             });
             //this.state.id = ((-1)* parseInt(this.state.id)).toString();
             alert("deleteIdInWindow: " + this.state.id);
-            
+
             // this.props.navigation.state.params.refreshFunction(this.state);
             // this.props.navigation.goBack();
         }
@@ -166,6 +199,10 @@ export default class AddItemWindow extends React.Component {
                 <TextInput onChangeText={(shop) => this.setState({ shop })} value={this.state.shop} />
                 <Button title="save" onPress={() => this.saveItem()} />
                 <Button title="delete" onPress={() => this.deleteConfirm()} />
+                <Pie
+                    data={this.data}
+                    options={this.options}
+                    accessorKey="population" />
             </View>
         );
     }
