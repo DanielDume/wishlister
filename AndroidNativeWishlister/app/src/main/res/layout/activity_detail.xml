@@ -11,62 +11,83 @@
         android:id="@+id/detailsEditName"
         android:layout_width="wrap_content"
         android:layout_height="46dp"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
         android:ems="10"
         android:inputType="textPersonName"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginLeft="8dp" />
+        tools:layout_editor_absoluteX="0dp" />
 
     <EditText
         android:id="@+id/detailsEditType"
         android:layout_width="wrap_content"
         android:layout_height="41dp"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="69dp"
         android:ems="10"
         android:inputType="textPersonName"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="123dp"
-        android:layout_marginLeft="8dp" />
+        tools:layout_editor_absoluteX="0dp" />
 
     <EditText
         android:id="@+id/detailsEditShop"
         android:layout_width="wrap_content"
         android:layout_height="46dp"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="120dp"
         android:ems="10"
         android:inputType="textPersonName"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="16dp"
-        android:layout_marginLeft="8dp" />
+        tools:layout_editor_absoluteX="0dp" />
 
     <EditText
         android:id="@+id/detailsEditPrice"
         android:layout_width="wrap_content"
         android:layout_height="41dp"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="180dp"
         android:ems="10"
         android:inputType="numberDecimal"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="16dp"
-        android:layout_marginLeft="8dp" />
+        tools:layout_editor_absoluteX="0dp" />
 
     <Button
         android:id="@+id/buttonSave"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="46dp"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="214dp"
         android:text="Save"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginRight="46dp" />
+        tools:layout_editor_absoluteX="296dp" />
+
+    <Button
+        android:id="@+id/buttonDelete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Delete"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="296dp"
+        android:layout_marginTop="273dp" />
+
+    <NumberPicker
+        android:id="@+id/numberPicker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="348dp"
+        android:layout_marginTop="16dp" />
+
+    <com.github.mikephil.charting.charts.PieChart
+        android:id="@+id/pieLayout"
+        android:layout_width="222dp"
+        android:layout_height="181dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="-23dp"
+        android:layout_marginTop="220dp"
+        android:layout_marginRight="150dp"/>
 
 </android.support.constraint.ConstraintLayout>

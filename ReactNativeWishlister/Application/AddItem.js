@@ -16,6 +16,7 @@ import {
 import Communications from 'react-native-communications';
 import StorageHelper from './Storage/StorageHelper';
 import { AsyncStorage } from 'react-native';
+
 export default class AddItemWindow extends React.Component {
     constructor(props) {
         super(props);
@@ -29,50 +30,49 @@ export default class AddItemWindow extends React.Component {
             price: 0.0,
         };
 
-        if (this.props.navigation.state.params.id !== undefined) {
-            var toEdit = this.props.navigation.state.params;
+        if (this.props.navigation.state.params.item !== undefined) {
+            var toEdit = this.props.navigation.state.params.item;
             this.state.id = toEdit.id;
             this.state.name = toEdit.name;
             this.state.type = toEdit.type;
             this.state.shop = toEdit.shop;
             this.state.price = toEdit.price;
         }
-        
+
     }
 
     async save() {
+        var item = {}
         if (this.state.id === 0) {
-            var item = {
+            item = {
                 id: -1,
                 name: this.state.name,
                 type: this.state.type,
                 shop: this.state.shop,
                 price: Number(this.state.price)
             };
-            // global.count = global.count + 1;
-            // global.wishItemList.push(item);            
         }
         else {
-            var item = this.state;
+            item = this.state;            
             for (var i = 0; i < global.wishItemList.length; i++) {
                 if (global.wishItemList[i].id === item.id) {
                     global.wishItemList[i] = item;
                 }
             }
         }
-        await this.storageHelper.add(item).then(()=>{this.props.navigation.state.params.refreshFunction().then(() => {this.props.navigation.goBack();})});
-        // this.props.navigation.state.params.refreshFunction();
-        // this.props.navigation.goBack();
+        this.storageHelper.add(item);        
+        this.props.navigation.state.params.refreshFunction(item);
+        this.props.navigation.goBack();
         ;
     }
 
-    deleteConfirm(){
+    deleteConfirm() {
         Alert.alert(
             'Are you sure you want to delete this item?',
             '',
             [
-                {text: 'No', onPress: () => {}, style: 'cancel'},
-                {text: 'Yes', onPress: () => this.delete()},
+                { text: 'No', onPress: () => { }, style: 'cancel' },
+                { text: 'Yes', onPress: () => this.delete() },
             ],
             { cancelable: true }
         );
@@ -82,8 +82,11 @@ export default class AddItemWindow extends React.Component {
         if (this.state.id === 0) {
             alert("bad shit");
         }
-        else {
+        else {            
             this.storageHelper.delete(this.state.id.toString());
+            this.state.id = -2;
+            this.props.navigation.state.params.refreshFunction(this.state);
+            this.props.navigation.goBack();
         }
 
     }
@@ -96,7 +99,6 @@ export default class AddItemWindow extends React.Component {
             this.types.push(element.name);
         });
     }
-
     render() {
         //this.populatePicker();
         return (
@@ -109,7 +111,7 @@ export default class AddItemWindow extends React.Component {
                     onValueChange={(itemValue, itemIndex) => this.setState({ type: itemValue })}>
                     <Picker.Item label='type1' value='type1' key='type1' />
                     <Picker.Item label='type2' value='type2' key='type2' />
-                    {this.types.map((t, i) => {return <Item label={t} value={t} key={t} />})}
+                    {this.types.map((t, i) => { return <Item label={t} value={t} key={t} /> })}
                 </Picker>
                 <TextInput onChangeText={(shop) => this.setState({ shop })} value={this.state.shop} />
                 <Button title="save" onPress={() => this.save()} />
@@ -119,3 +121,4 @@ export default class AddItemWindow extends React.Component {
     }
 
 }
+

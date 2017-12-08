@@ -22,18 +22,61 @@ export default class MainWindow extends React.Component {
         this.itemList = [];
         var dataSource = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1.Id != r2.Id });
 
-        this.refreshItems();
+        this.refreshItems(0);
 
         this.state = {
             dataSource: dataSource.cloneWithRows(this.itemList)
         }
     }
-    async refreshItems() {
+    backRefresh(item) {
+        //console.error(item);
+        if (item.id === -2) {
+            for (var index = 0; index < this.itemList.length; index++) {
+                var element = this.itemList[index];
+                if (element.name === item.name) {
+                    this.itemList.splice(index, 1);
+                    this.setState({
+                        dataSource: this.state.dataSource.cloneWithRows(this.itemList)
+                    })
+                    break;
+                }
+            }
+        }
+        else {
+            if (item.id === -1) {
+                alert("ENTERED ADD ITEM REFRESH");
+                this.itemList.push(JSON.parse(item));
+                this.setState({
+                    dataSource: this.state.dataSource.cloneWithRows(this.itemList)
+                });
+                this.refreshItems();
+            }
+            else {
+                for (var index = 0; index < this.itemList.length; index++) {
+                    var element = this.itemList[index];
+                    if (element.id === item.id) {
+                        alert(item.name);
+                        alert("QWERT");
+                        this.itemList[index].id = item.id;
+                        this.itemList[index].name = item.name;
+                        this.itemList[index].price = item.price;
+                        this.itemList[index].shop = item.shop;
+                        this.itemList[index].type = item.type;
+                        break;
+                    }
+                }
+                this.setState({
+                    dataSource: this.state.dataSource.cloneWithRows(this.itemList)
+                })
+                this.refreshItems();
+            }
+        }
         
-        //AsyncStorage.removeItem('ITEM_ID_LIST');
+    }
+    async refreshItems() {
+        //AsyncStorage.removeItem("ITEM_ID_LIST");
         this.itemList.length = 0;
         this.itemList = await this.storageHelper.getAll();
-        //console.error(this.itemList);
         this.setState({
             dataSource: this.state.dataSource.cloneWithRows(this.itemList)
         })
@@ -52,7 +95,7 @@ export default class MainWindow extends React.Component {
     }
 
     edit(item) {
-        this.props.navigation.navigate("Item", item);
+        this.props.navigation.navigate("Item", { item: item, refreshFunction: this.backRefresh.bind(this) });
     }
 
     renderRow(item) {
@@ -64,14 +107,14 @@ export default class MainWindow extends React.Component {
             </TouchableOpacity>
         );
     }
-    testFunc(){
+    testFunc() {
         console.error("gud tu si");
     }
     add() {
         global.wishItemList.forEach(function (element) {
 
         }, this);
-        this.props.navigation.navigate("Item", {refreshFunction:this.refreshItems.bind(this)});
+        this.props.navigation.navigate("Item", { refreshFunction: this.backRefresh.bind(this) });
     }
 
     render() {
