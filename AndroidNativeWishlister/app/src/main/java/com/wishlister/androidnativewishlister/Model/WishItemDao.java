@@ -26,8 +26,8 @@ public interface WishItemDao {
     @Query("SELECT * FROM WishItem WHERE id = :id")
     public WishItem getById(String id);
 
-    @Query("select max(id) from WishItem")
-    public String getNextId();
+    @Query("SELECT * FROM WishItem ORDER BY id DESC LIMIT 1")
+    public WishItem getNextId();
 
     @Delete
     public void deleteItem(WishItem item);

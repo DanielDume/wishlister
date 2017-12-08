@@ -57,10 +57,9 @@ public class MainActivity extends AppCompatActivity {
 
         db = AppDatabase.getAppDatabase(this);
         wishItemDao = db.wishItemDao();
-        ID = Integer.parseInt(wishItemDao.getNextId()) + 1;
+        ID = Integer.parseInt(wishItemDao.getNextId().getId()) + 1;
         setContentView(R.layout.activity_main);
         listView = (ListView)findViewById(R.id.listView);
-        ID = 1;
         adapter = new WishItemAdapter((ArrayList<WishItem>) wishItemDao.getAll(), this);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -89,25 +88,25 @@ public class MainActivity extends AppCompatActivity {
                         String type = editText2.getText().toString();
                         String shop = editText3.getText().toString();
                         Double price = Double.parseDouble(editText4.getText().toString());
-                        if(editFlag){
-                            for(int i =0;i<adapter.getCount();i++){
-                                if(adapter.getItem(i).getId() == Selected_ID){
-                                    adapter.getItem(i).setName(name);
-                                    adapter.getItem(i).setType(type);
-                                    adapter.getItem(i).setShop(shop);
-                                    adapter.getItem(i).setPrice(price);
-                                    break;
-                                }
-                            }
-                            Selected_ID="0";
-                            editText.setText(EMPTY_STRING);
-                            editText2.setText(EMPTY_STRING);
-                            editText3.setText(EMPTY_STRING);
-                            editText4.setText(EMPTY_STRING);
-                            adapter.notifyDataSetChanged();
-                            editFlag = !editFlag;
-                        }
-                        else{
+//                        if(editFlag){
+//                            for(int i =0;i<adapter.getCount();i++){
+//                                if(adapter.getItem(i).getId() == Selected_ID){
+//                                    adapter.getItem(i).setName(name);
+//                                    adapter.getItem(i).setType(type);
+//                                    adapter.getItem(i).setShop(shop);
+//                                    adapter.getItem(i).setPrice(price);
+//                                    break;
+//                                }
+//                            }
+//                            Selected_ID="0";
+//                            editText.setText(EMPTY_STRING);
+//                            editText2.setText(EMPTY_STRING);
+//                            editText3.setText(EMPTY_STRING);
+//                            editText4.setText(EMPTY_STRING);
+//                            adapter.notifyDataSetChanged();
+//                            editFlag = !editFlag;
+//                        }
+//                        else{
                             ID++;
                             WishItem newWishItem = new WishItem(name,type,shop,price,Integer.toString(ID));
                             adapter.add(newWishItem);
@@ -121,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
 //                            emailIntent.putExtra(Intent.EXTRA_SUBJECT, "New Wish Item");
 //                            emailIntent.putExtra(Intent.EXTRA_TEXT, newWishItem.toString());
 //                            startActivity(Intent.createChooser(emailIntent, "Send email..."));
-                        }
+//                        }
                     }
                 }
 
