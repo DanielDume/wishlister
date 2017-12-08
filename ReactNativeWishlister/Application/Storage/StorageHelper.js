@@ -40,7 +40,7 @@ export default class StorageHelper {
         AsyncStorage.getItem('ITEM_ID_LIST', (err, idList) => {
             if(idList != null){                
                 var tempList = JSON.parse(idList);
-                if (item.id === -1) {
+                if (item.id === 0) {
                     item.id = (parseInt(tempList[tempList.length - 1]) + 1).toString();
                     tempList.push(item.id);
                     AsyncStorage.setItem('ITEM_ID_LIST', JSON.stringify(tempList));
@@ -50,7 +50,7 @@ export default class StorageHelper {
             }
             else{
                 tempList = [];
-                if (item.id === -1) {
+                if (item.id === 0) {
                     item.id = '1';                    
                 }
                 tempList.push(item.id);

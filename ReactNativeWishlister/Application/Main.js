@@ -30,22 +30,27 @@ export default class MainWindow extends React.Component {
     }
     backRefresh(item) {
         //console.error(item);
-        if (item.id === -2) {
+        if (item.id < 0) {
+            var tempList = [];
+            alert("item id in main window: " + item.id);
             for (var index = 0; index < this.itemList.length; index++) {
                 var element = this.itemList[index];
                 if (element.name === item.name) {
-                    this.itemList.splice(index, 1);
-                    this.setState({
-                        dataSource: this.state.dataSource.cloneWithRows(this.itemList)
-                    })
-                    break;
+                    alert(element.name);                    
+                }
+                else{
+                    tempList.push(element);
                 }
             }
+            this.setState({
+                dataSource: this.state.dataSource.cloneWithRows(tempList)
+            });
         }
         else {
-            if (item.id === -1) {
+            if (item.id === 0) {
                 alert("ENTERED ADD ITEM REFRESH");
-                this.itemList.push(JSON.parse(item));
+                item.id = "-1";
+                this.itemList.push(item);
                 this.setState({
                     dataSource: this.state.dataSource.cloneWithRows(this.itemList)
                 });

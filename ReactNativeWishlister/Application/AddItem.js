@@ -45,24 +45,25 @@ export default class AddItemWindow extends React.Component {
         var item = {}
         if (this.state.id === 0) {
             item = {
-                id: -1,
+                id: 0,
                 name: this.state.name,
                 type: this.state.type,
                 shop: this.state.shop,
                 price: Number(this.state.price)
             };
+            this.storageHelper.add(item);        
+            this.props.navigation.state.params.refreshFunction(item);
+            this.props.navigation.goBack();
         }
         else {
-            item = this.state;            
-            for (var i = 0; i < global.wishItemList.length; i++) {
-                if (global.wishItemList[i].id === item.id) {
-                    global.wishItemList[i] = item;
-                }
-            }
+            item = this.state;
+            item.id = item.id.toString();                        
+            this.storageHelper.add(item);        
+            this.props.navigation.navigate("Home");
+            this.props.navigation.state.params.refreshFunction(item);
+            this.props.navigation.goBack();
         }
-        this.storageHelper.add(item);        
-        this.props.navigation.state.params.refreshFunction(item);
-        this.props.navigation.goBack();
+        
         ;
     }
 
@@ -80,13 +81,19 @@ export default class AddItemWindow extends React.Component {
 
     delete() {
         if (this.state.id === 0) {
-            alert("bad shit");
+            alert("Cannot delete an unexisting item!");
+            return;
         }
         else {            
-            this.storageHelper.delete(this.state.id.toString());
-            this.state.id = -2;
-            this.props.navigation.state.params.refreshFunction(this.state);
-            this.props.navigation.goBack();
+            this.storageHelper.delete(this.state.id.toString()).then(() => {
+                this.props.navigation.navigate("Home");
+                alert("THEN");
+            });
+            //this.state.id = ((-1)* parseInt(this.state.id)).toString();
+            alert("deleteIdInWindow: " + this.state.id);
+            
+            // this.props.navigation.state.params.refreshFunction(this.state);
+            // this.props.navigation.goBack();
         }
 
     }
