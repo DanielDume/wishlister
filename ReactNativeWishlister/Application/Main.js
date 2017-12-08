@@ -14,20 +14,27 @@ import {
 } from 'react-native';
 import StorageHelper from './Storage/StorageHelper';
 import { AsyncStorage } from 'react-native';
+var dataSource = new ListView.DataSource({rowHasChanged: (r1, r2) => {return r1.id !== r2.id;}});
 export default class MainWindow extends React.Component {
     constructor(props) {
         super(props);
-
         this.storageHelper = new StorageHelper();
-        this.itemList = [];
-        var dataSource = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1.Id != r2.Id });
+        //AsyncStorage.removeItem("ITEM_ID_LIST");
 
-        this.refreshItems(0);
-
-        this.state = {
-            dataSource: dataSource.cloneWithRows(this.itemList)
+        this.storageHelper.initArray().then(
+            ()=>{this.refresh();},
+            ()=>{}
+        );
+        this.state={
+            dataSource: dataSource.cloneWithRows(global.dataArray)
         }
     }
+
+    refresh(){
+        //console.error(global.dataArray);
+        this.setState(prevState => { return Object.assign({}, prevState, { dataSource: dataSource.cloneWithRows(global.dataArray)})});
+    }
+
     backRefresh(item) {
         //console.error(item);
         if (item.id < 0) {
@@ -100,7 +107,7 @@ export default class MainWindow extends React.Component {
     }
 
     edit(item) {
-        this.props.navigation.navigate("Item", { item: item, refreshFunction: this.backRefresh.bind(this) });
+        this.props.navigation.navigate("Item", { item: item, refreshFunction: this.refresh.bind(this) });
     }
 
     renderRow(item) {
@@ -116,10 +123,7 @@ export default class MainWindow extends React.Component {
         console.error("gud tu si");
     }
     add() {
-        global.wishItemList.forEach(function (element) {
-
-        }, this);
-        this.props.navigation.navigate("Item", { refreshFunction: this.backRefresh.bind(this) });
+        this.props.navigation.navigate("Item", { refreshFunction: this.refresh.bind(this) });
     }
 
     render() {

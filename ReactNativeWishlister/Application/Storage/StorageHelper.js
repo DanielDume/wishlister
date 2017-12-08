@@ -5,6 +5,37 @@ export default class StorageHelper {
 
     };
 
+    async initArray(){
+        var id_array;
+        try{
+            id_array = await AsyncStorage.getItem('ITEM_ID_LIST');
+            if(id_array === null){
+                return;
+            }
+            var elem;
+            id_array = JSON.parse(id_array);
+            //console.error(id_array);
+            for(var i = 0; i < id_array.length; ++i){
+                elem = await AsyncStorage.getItem(JSON.stringify(id_array[i]));
+                if(elem === null){
+                    console.error("CANT RETRIEVE ALL ITEMS");
+                }
+                global.dataArray.push(JSON.parse(elem));
+            }
+        }
+        catch (error){
+            console.error(error);
+        }
+    }
+
+    getIds(){
+        var id_array=[];
+        global.dataArray.forEach((elem)=>{
+           id_array.push(elem.id);
+        });
+        return id_array;
+    }
+
     async getTypes() {
         var types = [];
         var response = await fetch('http://10.10.10.10:3000/types');
@@ -16,7 +47,7 @@ export default class StorageHelper {
         return types;
     }
 
-    async getAll() {
+    async getAllOld() {
         var items = [];
         var fetchedItems = await AsyncStorage.getItem('ITEM_ID_LIST');
         fetchedItems = JSON.parse(fetchedItems);
@@ -28,7 +59,7 @@ export default class StorageHelper {
         return items;
     };
 
-    async getById(id) {
+    async getByIdOld(id) {
         var fetchedItem;
         await AsyncStorage.getItem(id, (err, item) => {
             fetchedItem = item
@@ -36,7 +67,26 @@ export default class StorageHelper {
         return fetchedItem;
     }
 
-    async add(item) {
+    async addItem(item){
+        try{
+            await AsyncStorage.setItem(JSON.stringify(item.id), JSON.stringify(item));
+            await AsyncStorage.setItem("ITEM_ID_LIST", JSON.stringify(this.getIds()));
+        }
+        catch (err){
+            console.error(err);
+        }
+    }
+
+    async deleteItem(id){
+        try{
+            await AsyncStorage.removeItem(JSON.stringify(id));
+            await AsyncStorage.setItem('ITEM_ID_LIST', JSON.stringify(this.getIds()));
+        } catch (error) {
+            console.log("Error:",error);
+        }
+    }
+
+    async addOld(item) {
         AsyncStorage.getItem('ITEM_ID_LIST', (err, idList) => {
             if(idList != null){                
                 var tempList = JSON.parse(idList);
@@ -61,7 +111,7 @@ export default class StorageHelper {
             
         })
     };
-    async delete(id) {
+    async deleteOld(id) {
         AsyncStorage.getItem('ITEM_ID_LIST', (err, idList) => {
             var tempList = JSON.parse(idList);
             const index = tempList.indexOf(id);

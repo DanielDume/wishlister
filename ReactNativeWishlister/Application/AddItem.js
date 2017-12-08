@@ -41,10 +41,41 @@ export default class AddItemWindow extends React.Component {
 
     }
 
-    async save() {
+    async saveItem(){
+        if (this.state.id === 0) {
+            var item = {
+                id: 0,
+                name: this.state.name,
+                type: this.state.type,
+                shop: this.state.shop,
+                price: Number(this.state.price)
+            };
+            var id = 1;
+            if (global.dataArray.length > 0){
+
+                id = (parseInt(global.dataArray[global.dataArray.length - 1].id) + 1).toString();            
+            }
+            item.id = id;
+            global.dataArray.push(item);
+        }
+        else {
+            var item = this.state;
+            //item.id = item.id;                        
+            for (var i = 0; i < global.dataArray.length; i++) {
+                if (global.dataArray[i].id == item.id) {
+                    global.dataArray[i] = item;
+                }
+            }            
+        }
+        this.storageHelper.addItem(item).then(()=>{}, ()=>{});
+        this.props.navigation.state.params.refreshFunction();
+        this.props.navigation.goBack();
+    }
+
+    async saveOld() {
         var item = {}
         if (this.state.id === 0) {
-            item = {
+            var item = {
                 id: 0,
                 name: this.state.name,
                 type: this.state.type,
@@ -78,8 +109,20 @@ export default class AddItemWindow extends React.Component {
             { cancelable: true }
         );
     }
+    delete(){
+        for (var index = 0; index < global.dataArray.length; index++) {
+            var element = global.dataArray[index];
+            if(element.id == this.state.id){
+                global.dataArray.splice(index, 1);
+                break;
+            }
+        }
+        this.storageHelper.deleteItem(this.state.id).then(()=>{}, ()=>{});
+        this.props.navigation.state.params.refreshFunction();
+        this.props.navigation.goBack();
 
-    delete() {
+    }
+    deleteOld() {
         if (this.state.id === 0) {
             alert("Cannot delete an unexisting item!");
             return;
@@ -121,7 +164,7 @@ export default class AddItemWindow extends React.Component {
                     {this.types.map((t, i) => { return <Item label={t} value={t} key={t} /> })}
                 </Picker>
                 <TextInput onChangeText={(shop) => this.setState({ shop })} value={this.state.shop} />
-                <Button title="save" onPress={() => this.save()} />
+                <Button title="save" onPress={() => this.saveItem()} />
                 <Button title="delete" onPress={() => this.deleteConfirm()} />
             </View>
         );
