@@ -5,6 +5,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
+
 var index = require('./routes/index');
 var users = require('./routes/users');
 var priceRanges = require('./routes/priceRanges');
@@ -12,6 +13,8 @@ var types = require('./routes/types');
 var items = require('./routes/items');
 
 var app = express();
+
+//import routeMiddleware from './lib/utils/route-middleware';
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -24,6 +27,11 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+
+// app.use((req, res, next) => {
+//   routeMiddleware(req, res, next, app);
+// });
 
 app.use('/', index);
 app.use('/users', users);
