@@ -5,6 +5,16 @@ export default class StorageHelper {
 
     };
 
+    async genericAdd(key, item){
+        AsyncStorage.setItem(key, item);
+    }
+
+    async genericGet(key){
+        var item = await AsyncStorage.getItem(key);
+        parsedItem = await JSON.parse(item);
+        return parsedItem;
+    }
+
     async initArray(){
         var id_array;
         try{
@@ -66,6 +76,7 @@ export default class StorageHelper {
         });
         return fetchedItem;
     }
+
 
     async addItem(item){
         try{

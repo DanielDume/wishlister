@@ -13,18 +13,21 @@ import {
     Alert
 } from 'react-native';
 import StorageHelper from './Storage/StorageHelper';
+import ApiHelper from './Storage/ApiHelper';
 import { AsyncStorage } from 'react-native';
 var dataSource = new ListView.DataSource({rowHasChanged: (r1, r2) => {return r1.id !== r2.id;}});
 export default class MainWindow extends React.Component {
     constructor(props) {
         super(props);
         this.storageHelper = new StorageHelper();
+        this.apiHelper = new ApiHelper();
         //AsyncStorage.removeItem("ITEM_ID_LIST");
 
-        this.storageHelper.initArray().then(
+        this.apiHelper.initArray().then(
             ()=>{this.refresh();},
             ()=>{}
         );
+        //fetch('http://10.10.10.10:3000/items/').then((response) => console.error(JSON.parse(response._bodyInit)[0].name));
         this.state={
             dataSource: dataSource.cloneWithRows(global.dataArray)
         }
@@ -126,12 +129,24 @@ export default class MainWindow extends React.Component {
         this.props.navigation.navigate("Item", { refreshFunction: this.refresh.bind(this) });
     }
 
+    logout(){
+        AsyncStorage.removeItem("JWToken");
+        AsyncStorage.removeItem("username");
+        AsyncStorage.removeItem("role");
+        global.role = undefined;
+        global.username = undefined;
+        global.token = undefined;
+        global.dataArray = [];
+        this.props.navigation.navigate("Login", {});
+    }
+
     render() {
         return (
             <View>
                 <Text>Items</Text>
                 <ListView dataSource={this.state.dataSource} renderRow={this.renderRow.bind(this)} />
                 <Button title="Add" onPress={() => this.add()} />
+                <Button title="Logout" onPress={() => this.logout()} />
             </View>
         );
     }

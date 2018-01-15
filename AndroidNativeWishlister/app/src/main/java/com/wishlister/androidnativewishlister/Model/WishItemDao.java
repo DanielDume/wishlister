@@ -32,4 +32,7 @@ public interface WishItemDao {
     @Delete
     public void deleteItem(WishItem item);
 
+    @Query("DELETE FROM WishItem")
+    public void deleteAll();
+
 }

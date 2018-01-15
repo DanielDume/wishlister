@@ -11,4 +11,7 @@ import java.util.List;
 
 public interface IWishItemRepository {
     ArrayList<WishItem> getAllItems();
+    WishItem addItem(WishItem item);
+    WishItem updateItem(WishItem item);
+    void deleteItem(String id);
 }

@@ -1,6 +1,6 @@
 const mongoose = require('./../DBConnection').mongoose;
 const Schema = mongoose.Schema;
-const crypto = require('crypto');
+var bcrypt = require('bcrypt');
 
 var userSchema = new Schema({
     username: {
@@ -13,18 +13,25 @@ var userSchema = new Schema({
         type: String,
         required: true
     },
+    role: {
+        type: String,
+    },
     items: [{
         type: Schema.Types.ObjectId,
         ref: 'Item'
     }],
 });
 
-userSchema.pre('save', function(next){
-    var user = this;
-    let hash = crypto.createHash('sha256').update(user.password).digest('base64');
-    this.password = hash;
-    next();
-})
+userSchema.methods.comparePassword = function(password){
+    return bcrypt.compareSync(password, this.password);
+}
+
+// userSchema.pre('save', function(next){
+//     var user = this;
+//     let hash = crypto.createHash('sha256').update(user.password).digest('base64');
+//     this.password = hash;
+//     next();
+// })
 
 var User = mongoose.model('User', userSchema);
 

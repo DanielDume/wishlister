@@ -11,7 +11,7 @@ router.get('/', function (req, res, next) {
       .exec((err, items) => {
         if (err)
           res.status(404).json({ message: err.message });
-        res.json(items);
+        res.json({ items : items});
       });
 });
 
