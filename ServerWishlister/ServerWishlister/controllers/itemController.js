@@ -41,6 +41,7 @@ exports.getAllItemsJava = function (req, res) {
 
 exports.deleteItem = function (req, res) {
 
+    console.log(req);
     User.findOne({ username: req.body.username }, function (err, user) {
         if (err) {
             res.json(err);

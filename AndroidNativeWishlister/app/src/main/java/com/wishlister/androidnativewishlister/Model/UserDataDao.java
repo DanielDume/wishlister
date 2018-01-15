@@ -27,4 +27,7 @@ public interface UserDataDao {
 
     @Delete
     public void deleteItem(UserData item);
+
+    @Query("DELETE FROM UserData")
+    void deleteData();
 }

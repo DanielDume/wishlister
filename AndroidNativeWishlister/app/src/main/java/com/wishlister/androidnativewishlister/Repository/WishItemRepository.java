@@ -107,7 +107,6 @@ public class WishItemRepository implements IWishItemRepository, Serializable {
                 Double price;
                 //items.add(new WishItem("n3","t","s",100.1,"id"));
                 for (int i = 0; i < array.length(); ++i){
-                    items.add(new WishItem("n","t","s",100.1,"id"));
                     id = array.getJSONObject(i).getString("_id");
                     name = array.getJSONObject(i).getString("name");
                     type = array.getJSONObject(i).getString("type");
@@ -150,7 +149,7 @@ public class WishItemRepository implements IWishItemRepository, Serializable {
 
             myConnection.setRequestMethod("POST");
 
-            String myData = "name=" + item.getName() + "&type=" + item.getType() + "&shop=" + item.getShop() + "&price=" + item.getPrice();
+            String myData = "username=" + userData.getUsername() + "&name=" + item.getName() + "&type=" + item.getType() + "&shop=" + item.getShop() + "&price=" + item.getPrice();
             myConnection.setDoOutput(true);
             myConnection.getOutputStream().write(myData.getBytes());
             if (myConnection.getResponseCode() == 200) {
@@ -173,6 +172,12 @@ public class WishItemRepository implements IWishItemRepository, Serializable {
 
                 myConnection.disconnect();
 
+                WishItem added = new WishItem(jObject.getString("name"), jObject.getString("type"), jObject.getString("shop"), jObject.getDouble("price"), jObject.getString("_id"));
+
+                wishItemDao.addItem(added);
+
+                return added;
+
             } else {
             }
 
@@ -180,16 +185,117 @@ public class WishItemRepository implements IWishItemRepository, Serializable {
         catch (Exception e){
             System.out.println(e.getMessage());
         }
-
-    }
-
-    @Override
-    public WishItem updateItem(WishItem item) {
         return null;
     }
 
     @Override
-    public void deleteItem(String id) {
+    public WishItem updateItem(WishItem item) {
 
+        try{
+            UserData userData = userDataDao.getData();
+
+            if (userData == null){
+                return null;
+            }
+
+
+            URL itemEndpoint = new URL("http://10.10.10.10:3000/items");
+            HttpURLConnection myConnection = (HttpURLConnection) itemEndpoint.openConnection();
+
+            myConnection.setRequestProperty("Accept", "application/json");
+            myConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            myConnection.setRequestProperty("Authorization", "JWT " + userData.getToken());
+
+            myConnection.setRequestMethod("PUT");
+
+            String myData = "username=" + userData.getUsername() + "&name=" + item.getName() + "&type=" + item.getType() + "&shop=" + item.getShop() + "&price=" + item.getPrice() + "&_id=" + item.getId();
+            myConnection.setDoOutput(true);
+            myConnection.getOutputStream().write(myData.getBytes());
+            if (myConnection.getResponseCode() == 200) {
+                InputStream inputStream = null;
+                String result = null;
+                inputStream = myConnection.getInputStream();
+
+                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"), 8);
+
+                StringBuilder sb = new StringBuilder();
+
+                String line = null;
+                while ((line = reader.readLine()) != null)
+                {
+                    sb.append(line + "\n");
+                }
+                result = sb.toString();
+
+                JSONObject jObject = new JSONObject(result);
+
+                myConnection.disconnect();
+
+                WishItem updated = new WishItem(jObject.getString("name"), jObject.getString("type"), jObject.getString("shop"), jObject.getDouble("price"), jObject.getString("_id"));
+
+                wishItemDao.updateItem(updated);
+
+                return updated;
+
+            } else {
+            }
+
+        }
+        catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+        return null;
+
+    }
+
+    @Override
+    public void deleteItem(String id) {
+        try{
+            UserData userData = userDataDao.getData();
+
+            if (userData == null){
+                return ;
+            }
+
+
+            URL itemEndpoint = new URL("http://10.10.10.10:3000/items");
+            HttpURLConnection myConnection = (HttpURLConnection) itemEndpoint.openConnection();
+
+            myConnection.setRequestProperty("Accept", "application/json");
+            myConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            myConnection.setRequestProperty("Authorization", "JWT " + userData.getToken());
+
+            myConnection.setRequestMethod("DELETE");
+
+            String myData = "username=" + userData.getUsername() + "&_id=" + id;
+            myConnection.setDoOutput(true);
+            myConnection.getOutputStream().write(myData.getBytes());
+            if (myConnection.getResponseCode() == 200) {
+//                InputStream inputStream = null;
+//                String result = null;
+//                inputStream = myConnection.getInputStream();
+//
+//                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"), 8);
+//
+//                StringBuilder sb = new StringBuilder();
+//
+//                String line = null;
+//                while ((line = reader.readLine()) != null)
+//                {
+//                    sb.append(line + "\n");
+//                }
+//                result = sb.toString();
+//
+//                JSONObject jObject = new JSONObject(result);
+
+                myConnection.disconnect();
+
+            } else {
+            }
+
+        }
+        catch (Exception e){
+            System.out.println(e.getMessage());
+        }
     }
 }

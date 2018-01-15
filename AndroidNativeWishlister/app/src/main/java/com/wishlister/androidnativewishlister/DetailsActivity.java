@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -43,6 +44,10 @@ public class DetailsActivity extends AppCompatActivity {
     private EditText editTextShop;
     private EditText editTextPrice;
     private String idItem;
+    private String nameItem;
+    private String typeItem;
+    private String shopItem;
+    private Double priceItem;
     private Button submitButton;
     private Button deleteButton;
     private AppDatabase db;
@@ -51,51 +56,30 @@ public class DetailsActivity extends AppCompatActivity {
     private NumberPicker numberPicker;
     private PieChart mChart;
     String[] types;
-//    public static class DeleteDialog extends DialogFragment {
-//        @Override
-//        public Dialog onCreateDialog(Bundle savedInstanceState) {
-//            // Use the Builder class for convenient dialog construction
-//            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-//            builder.setMessage("Are you soure you want to delete this item?")
-//                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-//                        public void onClick(DialogInterface dialog, int id) {
-//
-//                        }
-//                    })
-//                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
-//                        public void onClick(DialogInterface dialog, int id) {
-//
-//                        }
-//                    });
-//            return builder.create();
-//        }
-//    }
 
     String[] getTypes(){
         return new String[]{"type1", "type2", "type3"};
     }
     Hashtable<String, Integer> getUsedTypes()
     {
-        ArrayList<WishItem> items = (ArrayList<WishItem>)wishItemDao.getAll();
+        //ArrayList<WishItem> items = (ArrayList<WishItem>)wishItemDao.getAll();
         Hashtable<String, Integer> typesDisplayed = new Hashtable<>();
-        for (int i = 0; i < items.size(); ++i){
-            if (typesDisplayed.containsKey(items.get(i).getType())){
-                typesDisplayed.put(items.get(i).getType(), typesDisplayed.get(items.get(i).getType()) + 1);
-            }
-            else {
-                typesDisplayed.put(items.get(i).getType(), 1);
-            }
-        }
+        typesDisplayed.put("type1", 2);
+        typesDisplayed.put("type2", 4);
+        typesDisplayed.put("type3", 7);
+//        for (int i = 0; i < items.size(); ++i){
+//            if (typesDisplayed.containsKey(items.get(i).getType())){
+//                typesDisplayed.put(items.get(i).getType(), typesDisplayed.get(items.get(i).getType()) + 1);
+//            }
+//            else {
+//                typesDisplayed.put(items.get(i).getType(), 1);
+//            }
+//        }
         return typesDisplayed;
     }
     public void setData(int count, float range){
         ArrayList<PieEntry> entries = new ArrayList<>();
-//        int[] everyTypeCountArray = getEveryTypeCount();
-//        for (int i = 0; i < count; i++) {
-//            if (everyTypeCountArray[i] > 0) {
-//                entries.add(new PieEntry((everyTypeCountArray[i] * range), animalTypes[i]));
-//            }
-//        }
+
         Hashtable<String, Integer> usedTypes = getUsedTypes();
         for(String key : usedTypes.keySet()){
             entries.add(new PieEntry(usedTypes.get(key), key));
@@ -139,7 +123,7 @@ public class DetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail);
         db = AppDatabase.getAppDatabase(this);
         wishItemDao = db.wishItemDao();
-
+        repo = new WishItemRepository();
         editTextName = (EditText)findViewById(R.id.detailsEditName);
         editTextType = (EditText)findViewById(R.id.detailsEditType);
         editTextShop = (EditText)findViewById(R.id.detailsEditShop);
@@ -161,8 +145,12 @@ public class DetailsActivity extends AppCompatActivity {
         });
 
         this.idItem=(String)getIntent().getSerializableExtra("idItem");
+        this.nameItem=(String)getIntent().getSerializableExtra("nameItem");
+        this.typeItem=(String)getIntent().getSerializableExtra("typeItem");
+        this.shopItem=(String)getIntent().getSerializableExtra("shopItem");
+        this.priceItem=(Double) getIntent().getSerializableExtra("priceItem");
 
-        editedItem = wishItemDao.getById(idItem);
+        editedItem = new WishItem(nameItem,typeItem,shopItem,priceItem,idItem);
 
         int i;
         for (i = 0; i < types.length; ++i){
@@ -210,9 +198,18 @@ public class DetailsActivity extends AppCompatActivity {
                         editedItem.setPrice(Double.valueOf(editTextPrice.getText().toString()));
                         editedItem.setType(editTextType.getText().toString());
                         editedItem.setShop(editTextShop.getText().toString());
+                        AsyncTask.execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                WishItem edited = new WishItem(editTextName.getText().toString(),editTextType.getText().toString(), editTextShop.getText().toString(), Double.valueOf(editTextPrice.getText().toString()), (String)getIntent().getSerializableExtra("idItem"));
+                                repo.updateItem(edited);
+                                setResult(1);
+                                finish();
+                            }
+                        });
+
                         wishItemDao.updateItem(editedItem);
-                        setResult(1);
-                        finish();
+
                     }
                 }
 
@@ -230,6 +227,12 @@ public class DetailsActivity extends AppCompatActivity {
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
                                         wishItemDao.deleteItem(editedItem);
+                                        AsyncTask.execute(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                repo.deleteItem(editedItem.getId());
+                                            }
+                                        });
                                         setResult(1);
                                         finish();
 
